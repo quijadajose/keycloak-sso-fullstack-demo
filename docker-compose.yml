@@ -1,0 +1,92 @@
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0.0
+    environment: # https://www.keycloak.org/server/all-config
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
+      KC_DB: postgres
+      KC_DB_URL_HOST: db
+      KC_DB_URL_DATABASE: ${POSTGRES_DB}
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+
+      KC_HOSTNAME: ${KC_HOSTNAME:-localhost}
+      KC_HOSTNAME_URL: ${KC_HOSTNAME_URL:-keycloak.quijadajosed.duckdns.org}
+      KC_HOSTNAME_ADMIN_URL: ${KC_HOSTNAME_ADMIN_URL:-keycloak.quijadajosed.duckdns.org}
+      KC_HOSTNAME_STRICT: ${KC_HOSTNAME_STRICT:-false}
+      
+      KC_PROXY_HEADERS: xforwarded
+      KC_PROXY_TRUSTED_ADDRESSES: 0.0.0.0
+      KC_HTTP_RELATIVE_PATH: /
+    ports:
+      - "${KEYCLOAK_PORT:-8080}:8080"
+    depends_on:
+      - db
+    command:
+      - start-dev
+    restart: unless-stopped
+    networks:
+      - sso-net
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - sso-net
+
+  nest-sso-backend:
+    build: ./nest-sso-backend
+    container_name: nest-sso-backend
+    restart: unless-stopped
+    extra_hosts:
+    - "keycloak.quijadajosed.duckdns.org=host-gateway"
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+    networks:
+      - sso-net
+
+  spring-sso-backend:
+    build: ./spring-sso-backend
+    container_name: spring-sso-backend
+    restart: unless-stopped
+    extra_hosts:
+    - "keycloak.quijadajosed.duckdns.org=host-gateway"
+    ports:
+      - '3001:3001'
+    depends_on:
+      - db
+    networks:
+      - sso-net
+
+  nest-frontend:
+    build: ./nest-frontend
+    container_name: nest-frontend
+    restart: unless-stopped
+    ports:
+      - '8081:80'
+    networks:
+      - sso-net
+
+  spring-frontend:
+    build: ./spring-frontend
+    container_name: spring-frontend
+    restart: unless-stopped
+    ports:
+      - '8082:80'
+    networks:
+      - sso-net
+
+volumes:
+  db_data: {}
+
+networks:
+  sso-net:
+    driver: bridge
