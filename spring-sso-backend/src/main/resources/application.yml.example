@@ -1,0 +1,8 @@
+keycloak:
+  client-id: sso-spring
+  client-secret: el-secret-es-el-que-copiamos-en-el-paso-anterior
+  redirect-uri: https://spring-sso-backend.quijadajosed.duckdns.org/auth/callback
+  issuer-uri: https://keycloak.quijadajosed.duckdns.org/realms/sso-realm
+
+spa:
+  base-url: https://spring-frontend.quijadajosed.duckdns.org
