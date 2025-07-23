@@ -554,7 +554,7 @@ Abre tu navegador y navega a la URL de tu frontend Angular (ej. https://nest-fro
 Deberías ser redirigido a la página de inicio de sesión de Keycloak (sso-realm).
 
 ### Demostración del flujo de SSO:
-<video controls src="gallery/videos/tests.mp4" title="Title"></video>
+<video controls src="https://quijadajose.github.io/public/tests.mp4" title="Demostración del flujo de SSO"></video>
 
 ¡Felicidades! Has configurado Keycloak para gestionar el SSO entre tus aplicaciones.
 
