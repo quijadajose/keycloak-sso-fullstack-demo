@@ -1,0 +1,1 @@
+export const BACKEND_URL = 'https://spring-sso-backend.quijadajosed.duckdns.org'; 

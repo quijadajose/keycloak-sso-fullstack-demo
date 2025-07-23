@@ -1,0 +1,1 @@
+export const BACKEND_URL = 'https://nest-sso-backend.quijadajosed.duckdns.org';

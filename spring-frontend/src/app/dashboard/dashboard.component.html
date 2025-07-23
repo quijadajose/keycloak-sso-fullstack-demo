@@ -1,0 +1,23 @@
+<div class="dashboard-container">
+  <header class="dashboard-header">
+    <h1>Dashboard (Protected)</h1>
+    <p>Welcome to the protected dashboard!</p>
+    <button class="btn btn-danger" (click)="logout()">Logout</button>
+  </header> 
+  <section class="dashboard-actions">
+    <button class="btn btn-primary" (click)="fetchProtectedData()">Fetch Protected Data from Spring</button>
+    <button *ngIf="isAdmin" class="btn btn-primary ms-2" (click)="fetchAdminData()">Fetch Admin Data</button>
+  </section>
+
+  
+  <section class="data-output" *ngIf="adminData$ | async as adminData">
+    <h2>Fetched Admin Data:</h2>
+    <pre>{{ adminData | json }}</pre>
+  </section>
+  <section class="data-output" *ngIf="protectedData$ | async as data">
+    <h2>Fetched Regular Data:</h2>
+    <pre>{{ data | json }}</pre>
+  </section>
+
+
+</div>
